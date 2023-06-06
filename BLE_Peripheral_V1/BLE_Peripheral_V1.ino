@@ -20,6 +20,8 @@ is also compatible with the ArduinoBLE.h library.
 
 */
 
+//All serial commands need to be turned off when you want to use it disconnected of the laptop
+
 #include <ArduinoBLE.h>
 
 #define EXE_INTERVAL 100
@@ -40,9 +42,14 @@ unsigned long lastExecutedMillis = 0;  // variable to save the last executed tim
 
 void setup() {
 
+  //only definining the pins already turns on the blue LED, defining is not necessary 
+  //pinMode(LEDB, OUTPUT);
+  //pinMode(LED_BUILTIN, OUTPUT);
+
+
   Serial.begin(9600);
-  while (!Serial)
-    ;
+  // the code only executes while the serial monitor is available because of this line
+  //while (!Serial);
 
   // begin initialization
   if (!BLE.begin()) {
@@ -82,12 +89,15 @@ void setup() {
 
 void loop() {
 
+  // this turns on the LED somehow, it needs to be low
+  digitalWrite(LED_BUILTIN, LOW);
+
   // listen for BLE peripherals to connect. This naming and reasoning does not make sense to me
   BLEDevice central = BLE.central();
 
   unsigned long currentMillis = millis();
 
-  // When connected it does not execute the beginning of the loop anymore so everything would have to take place in the while statement. 
+  // When connected it does not execute the beginning of the loop anymore so everything would have to take place in the while statement.
   // Because this is what code will be running when the device is connected
   if (central) {
 
@@ -97,10 +107,12 @@ void loop() {
     Serial.println(central.address());
 
     // byte sensorValue1 = analogRead(A0);
-    //Serial.println(sensorValue1);
+    Serial.println(sensorValue1);
 
     // while the central is still connected to peripheral:
     while (central.connected()) {
+
+      digitalWrite(LEDB, LOW);
 
       unsigned long currentMillis = millis();
 
@@ -108,7 +120,7 @@ void loop() {
       // So 1000 - 1000, but then after that lastexecutedmillis is still 1000 because this isn't reset. So How does this work? But it works
       if (currentMillis - lastExecutedMillis >= EXE_INTERVAL) {
         // Save the last executed time
-        lastExecutedMillis = currentMillis;  
+        lastExecutedMillis = currentMillis;
 
         byte sensorValue1 = analogRead(A0);
         byte sensorValue2 = analogRead(A1);

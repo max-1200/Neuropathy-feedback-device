@@ -22,7 +22,7 @@ is also compatible with the ArduinoBLE.h library.
 
 #include <ArduinoBLE.h>
 
-// define which pins belong to which haptic feedback motor 
+// define which pins belong to which haptic feedback motor
 int vibOutPinFront = 0;
 int vibOutPinMiddle = 1;
 int vibOutPinBack = 2;
@@ -32,14 +32,17 @@ int vibOutPinBack = 2;
 
 void setup() {
 
+  //defining not needed, otherwise the LEDs already turn on
+  //pinMode(LEDB, OUTPUT);
+  //pinMode(LED_BUILTIN, OUTPUT);
+
   pinMode(vibOutPinFront, OUTPUT);
   pinMode(vibOutPinMiddle, OUTPUT);
   pinMode(vibOutPinBack, OUTPUT);
 
   Serial.begin(9600);
 
-  while (!Serial)
-    ;
+  //while (!Serial);
 
   // initialize the BLE hardware
   BLE.begin();
@@ -50,6 +53,8 @@ void setup() {
 }
 
 void loop() {
+
+  digitalWrite(LED_BUILTIN, LOW);
 
   // check if a peripheral has been discovered
   BLEDevice peripheral = BLE.available();
@@ -130,13 +135,15 @@ void ReadDataAndActuate(BLEDevice peripheral) {
 
   while (peripheral.connected()) {
 
+    digitalWrite(LEDB, LOW);
+
     // while the peripheral is connected
 
     if (feetpressurecharacteristic1.canRead() && feetpressurecharacteristic2.canRead() && feetpressurecharacteristic3.canRead()) {
 
-      byte value1 = feetpressurecharacteristic1.read(); //use for front, small sensor 
-      byte value2 = feetpressurecharacteristic2.read(); //use for middle, small sensor 
-      byte value3 = feetpressurecharacteristic3.read(); //use for the back, big sensor 
+      byte value1 = feetpressurecharacteristic1.read();  //use for front, small sensor
+      byte value2 = feetpressurecharacteristic2.read();  //use for middle, small sensor
+      byte value3 = feetpressurecharacteristic3.read();  //use for the back, big sensor
 
       feetpressurecharacteristic1.readValue(value1);
       feetpressurecharacteristic2.readValue(value2);
@@ -147,40 +154,40 @@ void ReadDataAndActuate(BLEDevice peripheral) {
       Serial.println(value3);
       Serial.println("---------");
 
-      if (value1 > 50) { 
+      if (value1 > 50) {
 
         //maybe map the vibOut should be mapped to the value of the sensor. However, the sensors read until 1kg or the big one of 10kg so the 1kg ones will act more as a switch.
         analogWrite(vibOutPinFront, 255);
-
       }
-      if(value1 < 50){
+      if (value1 < 50) {
         analogWrite(vibOutPinFront, 0);
       }
 
 
-      
-      if(value2 > 50){
+
+      if (value2 > 50) {
         analogWrite(vibOutPinMiddle, 255);
       }
-      if(value2 < 50){
+      if (value2 < 50) {
         analogWrite(vibOutPinMiddle, 0);
       }
 
 
 
-      if(value3 > 50){
+      if (value3 > 50) {
         analogWrite(vibOutPinBack, 255);
       }
-      if(value3 < 50){
+      if (value3 < 50) {
         analogWrite(vibOutPinBack, 0);
       }
 
       //use a swtich statement to clean this stuff up and put the outputvalue in a variable and map that variable to the value of the pressuresensor value
-
     }
 
     //delay(500);
   }
 
   Serial.println("Peripheral disconnected");
+  digitalWrite(LEDB, HIGH);
+
 }
