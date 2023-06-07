@@ -6,4 +6,6 @@ This project attempts to make a wearable haptic feedback device which assists pe
 - vibration motor modules
 - 10 kOhm resistors 
 ## Schematic Peripheral
-![Schematic_Peripheral_V1](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/a57ff085-ca1a-456f-992b-ebc2c25d8c72)
+![Schematic_Peripheral_V2](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/e6b6577e-a936-4e57-a988-d8a3c56d6bcb)
+## Schematic Central
+
