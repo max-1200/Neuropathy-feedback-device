@@ -18,6 +18,10 @@ Code based on an example on the official arduino page https://docs.arduino.cc/tu
 Although this code is written for 2 arduino nano rp2040 microcontrollers, it also works for my system since the seeed studio xiao BLE nRF52840 
 is also compatible with the ArduinoBLE.h library.
 
+I also used code from this forum thread about how to read the battery level of this microcontroller 
+https://forum.seeedstudio.com/t/xiao-ble-sense-battery-level-and-charging-status/263248/12
+The bit of code I used was from a poster named davekw7x
+
 */
 
 #include <ArduinoBLE.h>
@@ -29,6 +33,9 @@ int vibOutPinBack = 2;
 
 // no service uuid has to be defined since this is the central code, which means this is the side that searches for the adverting peripheral
 // no characteristic has to be defined since it only reads data from the peripheral. There is no double sided communication
+
+const double vRef = 3.3;                // Assumes 3.3V regulator output is ADC reference voltage
+const unsigned int numReadings = 1024;  // 10-bit ADC readings 0-1023, so the factor is 1024
 
 void setup() {
 
@@ -53,11 +60,11 @@ void setup() {
 }
 
 void loop() {
-
   digitalWrite(LED_BUILTIN, LOW);
 
-  // check if a peripheral has been discovered
-  BLEDevice peripheral = BLE.available();
+  ReadBatteryLevel();
+    // check if a peripheral has been discovered
+    BLEDevice peripheral = BLE.available();
   if (peripheral) {
 
     // discovered a peripheral, print out address, local name, and advertised service
@@ -85,6 +92,17 @@ void loop() {
     // peripheral disconnected, start scanning again
     BLE.scanForUuid("19b10000-e8f2-537e-4f6c-d104768a1214");
   }
+}
+
+void ReadBatteryLevel() {
+
+  // code for reading the battery voltage, not sure if it works
+  // PIN_VBAT is already defined in the pin library for this board
+  unsigned int adcCount = analogRead(PIN_VBAT);
+  double adcVoltage = (adcCount * vRef) / numReadings;
+  // voltage divider from Vbat to ADC, this means when the battery is disconnected it will still show a voltage even though the adcvoltage should be 0
+  double vBat = adcVoltage * 1510.0 / 510.0;
+  Serial.println(vBat);
 }
 
 void ReadDataAndActuate(BLEDevice peripheral) {
@@ -154,30 +172,30 @@ void ReadDataAndActuate(BLEDevice peripheral) {
       Serial.println(value3);
       Serial.println("---------");
 
-      if (value1 > 50) {
+      if (value1 > 95) {
 
         //maybe map the vibOut should be mapped to the value of the sensor. However, the sensors read until 1kg or the big one of 10kg so the 1kg ones will act more as a switch.
         analogWrite(vibOutPinFront, 255);
       }
-      if (value1 < 50) {
+      if (value1 < 99) {
         analogWrite(vibOutPinFront, 0);
       }
 
 
 
-      if (value2 > 50) {
+      if (value2 > 99) {
         analogWrite(vibOutPinMiddle, 255);
       }
-      if (value2 < 50) {
+      if (value2 < 99) {
         analogWrite(vibOutPinMiddle, 0);
       }
 
 
 
-      if (value3 > 50) {
+      if (value3 > 99) {
         analogWrite(vibOutPinBack, 255);
       }
-      if (value3 < 50) {
+      if (value3 < 99) {
         analogWrite(vibOutPinBack, 0);
       }
 
@@ -187,7 +205,7 @@ void ReadDataAndActuate(BLEDevice peripheral) {
     //delay(500);
   }
 
+  // 1 works to turn off the LED, writing HIGH doesn't 
   Serial.println("Peripheral disconnected");
-  digitalWrite(LEDB, HIGH);
-
+  digitalWrite(LEDB, 1);
 }

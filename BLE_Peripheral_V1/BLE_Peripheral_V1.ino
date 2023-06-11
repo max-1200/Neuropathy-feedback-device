@@ -18,6 +18,10 @@ Code based on an example on the official arduino page https://docs.arduino.cc/tu
 Although this code is written for 2 arduino nano rp2040 microcontrollers, it also works for my system since the seeed studio xiao BLE nRF52840 
 is also compatible with the ArduinoBLE.h library.
 
+I also used code from this forum thread about how to read the battery level of this microcontroller 
+https://forum.seeedstudio.com/t/xiao-ble-sense-battery-level-and-charging-status/263248/12
+The bit of code I used was from a poster named davekw7x
+
 */
 
 //All serial commands need to be turned off when you want to use it disconnected of the laptop
@@ -38,11 +42,14 @@ BLEUnsignedIntCharacteristic feetpressurecharacteristic3("19B10003-E8F2-537E-4F6
 int period = 10000;
 unsigned long time_now = 0;
 
-unsigned long lastExecutedMillis = 0;  // variable to save the last executed time
+unsigned long lastExecutedMillis = 0;   // variable to save the last executed time\
+
+const double vRef = 3.3;                // Assumes 3.3V regulator output is ADC reference voltage
+const unsigned int numReadings = 1024;  // 10-bit ADC readings 0-1023, so the factor is 1024
 
 void setup() {
 
-  //only definining the pins already turns on the blue LED, defining is not necessary 
+  //only definining the pins already turns on the blue LED, defining is not necessary
   //pinMode(LEDB, OUTPUT);
   //pinMode(LED_BUILTIN, OUTPUT);
 
@@ -50,6 +57,10 @@ void setup() {
   Serial.begin(9600);
   // the code only executes while the serial monitor is available because of this line
   //while (!Serial);
+
+  // defining the pins which are used for the voltage level of the batter
+  pinMode(P0_14, OUTPUT);
+  digitalWrite(P0_14, LOW);
 
   // begin initialization
   if (!BLE.begin()) {
@@ -89,6 +100,14 @@ void setup() {
 
 void loop() {
 
+  // code for reading the battery voltage, not sure if it works 
+  // PIN_VBAT is already defined in the pin library for this board
+  unsigned int adcCount = analogRead(PIN_VBAT); 
+  double adcVoltage = (adcCount * vRef) / numReadings;
+  // voltage divider from Vbat to ADC, this means when the battery is disconnected it will still show a voltage even though the adcvoltage should be 0 
+  double vBat = adcVoltage * 1510.0 / 510.0;  
+  //Serial.println(vBat);
+
   // this turns on the LED somehow, it needs to be low
   digitalWrite(LED_BUILTIN, LOW);
 
@@ -107,7 +126,7 @@ void loop() {
     Serial.println(central.address());
 
     // byte sensorValue1 = analogRead(A0);
-    Serial.println(sensorValue1);
+    //Serial.println(sensorValue1);
 
     // while the central is still connected to peripheral:
     while (central.connected()) {
@@ -126,10 +145,16 @@ void loop() {
         byte sensorValue2 = analogRead(A1);
         byte sensorValue3 = analogRead(A2);
 
+        // test the values before mapping
+        // Serial.println(sensorValue1);
+        // Serial.println(sensorValue2);
+        // Serial.println(sensorValue3);
+        // Serial.println("---------");
+
         // Turning the analogread into bytes works perfectly
-        sensorValue1 = map(sensorValue1, 0, 205, 0, 100);
-        sensorValue2 = map(sensorValue2, 0, 205, 0, 100);
-        sensorValue3 = map(sensorValue3, 0, 205, 0, 100);
+        sensorValue1 = map(sensorValue1, 0, 210, 0, 100); // it's not ideal that the sensors don't have the same peak values, make sure to get the same sensors
+        sensorValue2 = map(sensorValue2, 0, 250, 0, 100);
+        sensorValue3 = map(sensorValue3, 0, 250, 0, 100);
 
         Serial.println(sensorValue1);
         Serial.println(sensorValue2);
@@ -145,4 +170,7 @@ void loop() {
       //delay(500);
     }
   }
+
+  // somehow for this code, HIGH works without issues
+  digitalWrite(LEDB, HIGH);
 }
