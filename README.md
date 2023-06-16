@@ -9,7 +9,8 @@ This project attempts to make a wearable haptic feedback device which assists pe
 - 2 switches
 ## Schematic Peripheral
 The actual components used vary from the schematic. I just chose symbols that made sense to give you an indication on how the circuit works. In a final version I will of course make all the components and PCB files needed. But that will take a while.
-![Schematic_Peripheral_V2](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/e6b6577e-a936-4e57-a988-d8a3c56d6bcb)
+![Schematic_Peripheral_V2](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/ca9b906b-8f94-4b45-8e8c-9fb182df508f)
+)
 ## Schematic Central
-![Schematic_Central_V1](https://github.com/max-1200/Neuropathy-feedback-device/blob/main/Schematic_Central_V1.png)
+![Schematic_Central_V1](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/48620f34-6957-480d-835c-b1bfacd19995)
 
