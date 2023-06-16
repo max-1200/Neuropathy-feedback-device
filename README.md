@@ -7,6 +7,7 @@ This project attempts to make a wearable haptic feedback device which assists pe
 - 10 kOhm resistors 
 - 2 lithium ion batteries 1250 mAh (this can change in the future when the code is optimized and power usage is known)
 - 2 switches
+- 4x JST-XH connectors
 ## Schematic and PCB design Peripheral
 Instead of a schematic with the components this is the actual schematic I used to create the first PCB for this device. Replacing wired jumper wires it made more sense to add the connectors to a circuit board and solder the microcontroller onto the PCB itself. I don't know yet if this is the best approach. Since eventually I probably want to recycle the microcontroller. However, it decreases the footprint of the device dramatically. And I hope to make it such an integrated device already that I can already start user testing in real life situations. Recycling the microcontroller might be possible eventually with a heatgun. This would be great. 
 ![Schematic_Peripheral_V3](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/29c1c603-bfb9-4915-ac42-e398dd00685d)
