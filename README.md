@@ -7,9 +7,13 @@ This project attempts to make a wearable haptic feedback device which assists pe
 - 10 kOhm resistors 
 - 2 lithium ion batteries 1250 mAh (this can change in the future when the code is optimized and power usage is known)
 - 2 switches
-## Schematic Peripheral
-The actual components used vary from the schematic. I just chose symbols that made sense to give you an indication on how the circuit works. In a final version I will of course make all the components and PCB files needed. But that will take a while.
-![Schematic_Peripheral_V2](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/e6b6577e-a936-4e57-a988-d8a3c56d6bcb)
+- 4x JST-XH connectors
+## Schematic and PCB design Peripheral
+Instead of a schematic with the components this is the actual schematic I used to create the first PCB for this device. Replacing wired jumper wires it made more sense to add the connectors to a circuit board and solder the microcontroller onto the PCB itself. I don't know yet if this is the best approach. Since eventually I probably want to recycle the microcontroller. However, it decreases the footprint of the device dramatically. And I hope to make it such an integrated device already that I can already start user testing in real life situations. Recycling the microcontroller might be possible eventually with a heatgun. This would be great. 
+![Schematic_Peripheral_V3](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/29c1c603-bfb9-4915-ac42-e398dd00685d)
+![PCB_Peripheral_V1](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/0964df9b-1de6-42af-8b50-029e1727d1d1)
+
 ## Schematic Central
-![Schematic_Central_V1](https://github.com/max-1200/Neuropathy-feedback-device/blob/main/Schematic_Central_V1.png)
+For Now I really trying to finalize the peripheral side of this project. When this is done I will get back to integration into fabric or a wristband and this is where Central will be further developed. 
+![Schematic_Central_V1](https://github.com/max-1200/Neuropathy-feedback-device/assets/71038234/48620f34-6957-480d-835c-b1bfacd19995)
 
